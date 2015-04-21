@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.noriental.security.usermanage.domain.Function">
+	<resultMap id="functionMap" type="com.noriental.security.usermanage.domain.Function">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="stats" property="stats" jdbcType="TINYINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="parent_code" property="parentCode" jdbcType="BIGINT" />
+		<result column="_order" property="_order" jdbcType="TINYINT" />
+		
+		<result column="domain_id" property="domainId" jdbcType="BIGINT" />
+		<result column="user_type" property="userType" jdbcType="TINYINT" />
+	</resultMap>
+
+	<!-- 根据 UserId 获取该用户对应的功能模块信息  -->
+	<select id="findUserFuncList" parameterType="map" resultMap="functionMap">
+			select func.* from auth_func func where id  in (
+				select 	distinct rf.func_id from auth_link_group_role gr 
+				right join auth_link_role_func rf on rf.role_Id = gr.role_id
+			 	where gr.group_id in (select group_id from auth_link_group_user where person_id = #{personId})
+			) and func.stats = #{stats} and func.domain_id = #{domainId}
+			order by func.parent_code, func._order asc
+	</select>
+	<!-- 根据 roleId 获取该角色对应的权限信息 -->
+	<select id="findByRoleId" parameterType="map" resultMap="functionMap">
+			select * from auth_func func where id in (
+				select func_id from auth_link_role_func where role_id=#{roleId}
+			)
+			and func.stats = 0
+			order by func.parent_code, func._order asc
+	</select>
+	<!-- 根据 group_id 获取该组对应的权限信息 -->
+	<select id="findByGroupId" parameterType="map" resultMap="functionMap">
+		select * from auth_func func where id in (
+			select func_id from auth_link_group_role	gr
+			right join 	auth_link_role_func	rf	on 	gr.role_id = rf.role_id 
+			where gr.group_id = #{groupId} and func.stats = 0
+		)
+		order by func.parent_code, func._order asc
+	</select>
+	<!-- 获取权限信息 -->
+	<select id="find" parameterType="map" resultMap="functionMap">
+			select *  from auth_func 
+			where 1=1
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="domainId != null">
+				and domain_id = #{domainId}
+			</if>
+			<if test="userType != null">
+				and user_type = #{userType}
+			</if>
+			<if test="parentCode != null">
+				and parent_code = #{parentCode}
+			</if>
+			<if test="stats != null">
+				and stats=#{stats}
+			</if>
+			<if test="domainId != null">
+				and domain_id = #{domainId}
+			</if>
+			order by _order asc
+	</select>
+	<insert id="insert" parameterType="com.noriental.security.usermanage.domain.Function"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into auth_func (
+			stats,			name,
+			remark,			parent_code,		_order,
+			domain_id,			user_type
+		)
+		values (
+			#{stats},		#{name},
+			#{remark},		#{parentCode},		#{_order},
+			#{domainId},		#{userType}
+		)
+	</insert>
+	<update id="update" parameterType="com.noriental.security.usermanage.domain.Function">
+		update auth_func 
+		<set>
+			<if test="stats != null">
+				stats=#{stats},
+			</if> 
+			<if test="name != null">
+				name=#{name},
+			</if> 
+			<if test="remark != null">
+				remark=#{remark},
+			</if> 
+			<if test="parentCode != null">
+				parent_code=#{parentCode},
+			</if>
+			<if test="domainId != null">
+				domain_id=#{domainId},
+			</if> 
+			<if test="userType != null">
+				user_type=#{userType},
+			</if>
+			<if test="_order != null">
+				_order=#{_order},
+			</if> 
+		</set> 
+		where 1=1
+		<if test="id != null">
+			and id=#{id}
+		</if>
+	</update>
+	<delete id="delete" parameterType="java.lang.Long">
+    	delete from auth_func where id = #{id}
+    </delete>
+     <!-- 根据 main_id 获取权限信息  -->
+	<select id="findById" parameterType="java.lang.Long" resultMap="functionMap">
+		select * from auth_func where id = #{id}
+	</select>
+	
+	<update id="updateStatsByfuncIds" parameterType="map">
+		update auth_func set stats = #{stats}
+		where id in 
+		
+		<foreach item="item" index="index" collection="funcIds" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	<select id="findFuncForPage" parameterType="map" resultMap="functionMap">
+			select *  from auth_func 
+			where 1=1
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="domainId != null">
+				and domain_id = #{domainId}
+			</if>
+			<if test="userType != null">
+				and user_type = #{userType}
+			</if>
+			<if test="parentCode != null">
+				and parent_code = #{parentCode}
+			</if>
+			<if test="stats != null">
+				and stats=#{stats}
+			</if>
+			order by _order asc
+			<if test="start != null and size != null">
+				limit #{start}, #{size}  
+			</if>
+	</select>
+	
+	<select id="countFuncForPage" parameterType="map" resultMap="functionMap">
+		select *  from auth_func 
+			where 1=1
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="domainId != null">
+				and domain_id = #{domainId}
+			</if>
+			<if test="userType != null">
+				and user_type = #{userType}
+			</if>
+			<if test="parentCode != null">
+				and parent_code = #{parentCode}
+			</if>
+			<if test="stats != null">
+				and stats=#{stats}
+			</if>
+			order by _order asc
+	</select>
+</mapper>

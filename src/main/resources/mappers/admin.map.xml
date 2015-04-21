@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.noriental.security.usermanage.domain.Admin">
+	<resultMap id="adminMap" type="com.noriental.security.usermanage.domain.Admin">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="qq" property="qq" jdbcType="VARCHAR" />
+		<result column="login_user" property="loginUser" jdbcType="VARCHAR" />
+		<result column="login_pass" property="loginPass" jdbcType="VARCHAR" />
+		<result column="stats" property="stats" jdbcType="TINYINT" />
+		<result column="type" property="type" jdbcType="TINYINT" />
+		<result column="create_time" property="createTime" jdbcType="DATE" /> 
+		<result column="update_time" property="updateTime" jdbcType="DATE" />
+	</resultMap>
+
+	<!-- 根据条件查询用户 -->
+	<select id="find" parameterType="map" resultMap="adminMap">
+		select * from entity_admin where 1=1 
+		<if test="loginUser != null">
+			and login_user = #{loginUser}
+		</if>
+		<if test="loginPass != null">
+			and login_pass = #{loginPass}
+		</if>
+		<if test="type != null">
+			and type = #{type}
+		</if>
+	</select>
+	<select id="findForPage" parameterType="map" resultMap="adminMap">
+		select admin.* from entity_admin  admin, auth_link_group_user gu where  
+			admin.id = gu.person_id 
+			and gu.group_id in 
+			<foreach item="item" index="index" collection="groupIds" open="("
+			separator="," close=")">
+				#{item}
+			</foreach>
+			<if test="stats != -1">
+				and admin.stats = #{stats}
+			</if>	
+			<if test="loginUser != null">
+				and (admin.name like CONCAT('%',#{loginUser},'%')  or admin.login_user like CONCAT('%',#{loginUser},'%') ) 
+			</if>	 
+			order by admin.id
+	</select>
+	
+	<select id="findByGroupId" parameterType="long" resultMap="adminMap">
+		select admin.* from entity_admin admin, auth_link_group_user gu 
+		where p.id = gu.person_id and gu.group_id  = #{groupId} 
+	</select>
+	
+	<select id="findByRoleId" parameterType="long" resultMap="adminMap">
+		select * from entity_admin where id in (
+			select id from auth_role where id in (
+				select distinct gr.role_id from auth_link_group_role gr
+				right join 	auth_link_group_user gu on gu.group_id = gr.group_id
+				where gr.role_id = #{roleId}
+			) and stats = 0
+		);
+	</select>
+	
+	<!-- 根据id查询用户 -->
+	<select id="findById" parameterType="long" resultMap="adminMap">
+		select * from entity_admin where id = #{id}
+	</select>
+	
+	<!-- 修改密码 -->
+	<update id="updatepasswd" parameterType="map">
+		update entity_admin set
+			login_pass = #{loginPass},
+			update_time=now() 
+		where 
+			login_user=#{loginUser}
+	</update>
+	
+	<!-- 修改用户信息 -->
+	<update id="update" parameterType="com.noriental.security.usermanage.domain.Admin">
+		update entity_admin 
+		<set>
+			<if test="email != null">
+				email=#{email},
+			</if> 
+			<if test="qq != null">
+				qq=#{qq},
+			</if> 
+			<if test="name != null">
+				name=#{name},
+			</if> 
+			<if test="phone != null">
+				phone=#{phone},
+			</if> 
+			<if test="loginUser != null">
+				login_user=#{loginUser},
+			</if>
+			<if test="stats != null">
+				stats=#{stats},
+			</if> 
+			update_time=now() 
+		</set> 
+		where 1=1
+		<if test="loginUser != null">
+			and login_user=#{loginUser}
+		</if>
+		<if test="id != null">
+			and id=#{id}
+		</if>
+	</update>
+	<!-- 添加用户 -->
+	<insert id="insert" parameterType="com.noriental.security.usermanage.domain.Admin"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into entity_admin (
+			name, 			phone,			email,
+			qq, 			login_user,		login_pass,
+			stats, 			type, 			create_time
+		)
+		values (
+			#{name},		#{phone},		#{email},
+			#{qq},			#{loginUser},	#{loginPass},
+			#{stats},		#{type},		#{createTime}
+		)
+	</insert>
+	
+	<select id="findSuperNum" parameterType="map" resultMap="adminMap">
+		select admin.* from entity_admin  admin, auth_link_group_user gu , auth_group g where  
+			admin.id = gu.person_id and gu.group_id = g.id and g.type = -1
+			and gu.group_id in 
+			<foreach item="item" index="index" collection="groupIds" open="("
+			separator="," close=")">
+				#{item}
+			</foreach>
+			<if test="stats != -1">
+				and admin.stats = #{stats}
+			</if>	
+			<if test="loginUser != null">
+				and (admin.name like CONCAT('%',#{loginUser},'%')  or admin.login_user like CONCAT('%',#{loginUser},'%') ) 
+			</if>	 
+			order by admin.id
+	</select>
+</mapper>

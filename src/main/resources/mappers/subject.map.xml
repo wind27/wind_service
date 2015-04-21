@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.noriental.security.usermanage.domain.TSubject">
+	<resultMap id="tSubjectMap" type="com.noriental.security.usermanage.domain.TSubject">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="semester_id" property="semesterId" jdbcType="BIGINT" />
+		<result column="stage_id" property="stageId" jdbcType="BIGINT" />
+		<result column="fullname" property="fullname" jdbcType="VARCHAR" />
+		<result column="seq" property="seq" jdbcType="TINYINT" />
+	</resultMap>
+
+	<!-- 根据条件查询用户 -->
+	<select id="find" parameterType="map" resultMap="tSubjectMap">
+		select * from entity_subject 
+		<if test="ids != null and ids.size()>0">
+			where id in 
+			<foreach item="item" index="index" collection="ids" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		order by seq
+	</select>
+	
+	<!-- 根据用户id获取学科 -->
+	<select id="findSubjectByUserId" parameterType="long" resultMap="tSubjectMap">
+		select * from entity_subject where id in (
+			select subject_id from auth_link_admin_subject  where person_id = #{personId}
+		) order by seq asc
+	</select>
+</mapper>

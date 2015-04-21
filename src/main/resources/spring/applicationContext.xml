@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans classpath:org/springframework/beans/factory/xml/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context classpath:org/springframework/context/config/spring-context-4.0.xsd
+        http://www.springframework.org/schema/aop classpath:org/springframework/aop/config/spring-aop-4.0.xsd
+        http://www.springframework.org/schema/tx classpath:org/springframework/transaction/config/spring-tx-4.0.xsd ">
+	
+	<context:property-placeholder location="classpath*:*.properties" ignore-unresolvable="true" />
+	
+	<context:component-scan base-package="com.noriental.security.usermanage.dao.impl"/>
+	<context:component-scan base-package="com.noriental.security.usermanage.service.impl"/>
+    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="driverClass" value="${ds.bonecp.driver}" />
+        <property name="jdbcUrl" value="${ds.bonecp.url}" />
+        <property name="username" value="${ds.bonecp.username}"/>
+        <property name="password" value="${ds.bonecp.password}"/>
+        <property name="maxConnectionsPerPartition" value="${ds.bonecp.maxConnectionsPerPartition}"/>
+        <property name="minConnectionsPerPartition" value="${ds.bonecp.minConnectionsPerPartition}"/>
+        <property name="partitionCount" value="${ds.bonecp.partitionCount}"/>
+        <property name="acquireIncrement" value="${ds.bonecp.acquireIncrement}"/>
+        <property name="statementsCacheSize" value="${ds.bonecp.statementsCacheSize}"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mappers/mybatis-config.xml"></property>
+        <property name="dataSource" ref="dataSource" />
+        <property name="mapperLocations" value="classpath*:mappers/*.map.xml" />
+        <property name="plugins">
+            <list>
+                <ref bean="paginationInterceptor" />
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="paginationInterceptor" class="com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor">
+		<property name="dialect">
+			<ref bean="dialectClass"/>
+		</property>
+	</bean>
+	
+	<bean id="dialectClass" class="com.github.miemiedev.mybatis.paginator.dialect.MySQLDialect"/>
+
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory" />
+    </bean>
+
+    <!-- ================================== TRANSACTION DEFINITIONS ================================== -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="find*" propagation="SUPPORTS" read-only="true"/>
+            <tx:method name="create*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="SUPPORTS"/>
+            <tx:method name="batch*" propagation="SUPPORTS"/>
+            <tx:method name="*" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="serviceMethods" expression="execution(* com.noriental.security.usermanage.service.*.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
+    </aop:config>
+</beans>

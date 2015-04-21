@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.noriental.security.usermanage.domain.Permission">
+	<resultMap id="permissionMap" type="com.noriental.security.usermanage.domain.Permission">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="uri" property="uri" jdbcType="VARCHAR" />
+		<result column="func_id" property="funcId" jdbcType="BIGINT" />
+		<result column="stats" property="stats" jdbcType="TINYINT" />
+		<result column="method" property="method" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 根据 func_id 获取权限信息  -->
+	<select id="findByFuncIds" parameterType="java.util.List" resultMap="permissionMap">
+		select * from auth_permission 
+			<if test="list != null and list.size()>0">
+				where func_id in
+				<foreach item="item" index="index" collection="list" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+	</select>
+	
+	<!-- 根据 groupId 获取权限信息 -->
+	<select id="findByGroupId" parameterType="long" resultMap="permissionMap">
+		select * from auth_permission where func_id  in (
+			select func_id from auth_link_group_role	gr
+			right join 	auth_link_role_func	rf	on 	gr.role_id = rf.role_id 
+			where gr.group_id = #{groupId}
+		);
+	</select>
+	
+	<insert id="insert" parameterType="com.noriental.security.usermanage.domain.Permission"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into auth_permission (
+			uri, 			func_id,			stats,
+			method
+		)
+		values (
+			#{uri},			#{funcId},			#{stats},
+			#{method}
+		)
+	</insert>
+
+	<delete id="delete" parameterType="java.lang.Long">
+    	delete from auth_permission where id = #{id}
+    </delete>
+    
+    <!-- 根据 func_id 获取权限信息  -->
+	<select id="findById" parameterType="long" resultMap="permissionMap">
+		select * from auth_permission where id = #{id}
+	</select>
+	<update id="update" parameterType="com.noriental.security.usermanage.domain.Permission">
+		update auth_permission 
+		<set>
+			<if test="uri != null">
+				uri=#{uri},
+			</if> 
+			<if test="funcId != null">
+				func_id=#{funcId},
+			</if> 
+			<if test="stats != null">
+				stats=#{stats},
+			</if> 
+			<if test="method != null">
+				method=#{method},
+			</if> 
+		</set> 
+		where 1=1
+		<if test="id != null">
+			and id=#{id}
+		</if>
+	</update>
+	
+	<select id="findPermissionForPage" parameterType="map" resultMap="permissionMap">
+		select * from auth_permission where 1=1
+		<if test="funcIds != null and funcIds.size()>0">
+			and func_id in
+			<foreach item="item" index="index" collection="funcIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="stats != null">
+			and stats = #{stats}
+		</if>
+		<if test="start != null and size != null">
+			limit #{start}, #{size}  
+		</if>
+	</select>
+	
+	<select id="countPermissionForPage" parameterType="map" resultMap="permissionMap">
+		select * from auth_permission 
+		<if test="funcIds != null and funcIds.size()>0">
+			where func_id in
+			<foreach item="item" index="index" collection="funcIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+</mapper>

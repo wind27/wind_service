@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.noriental.security.usermanage.domain.GroupLinkUser">
+	<resultMap id="groupLinkUserMap" type="com.noriental.security.usermanage.domain.GroupLinkUser">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="group_id" property="groupId" jdbcType="BIGINT" />
+		<result column="person_id" property="personId" jdbcType="BIGINT" />
+		
+		<result column="user_type" property="userType" jdbcType="TINYINT" />
+		<result column="domain_id" property="domainId" jdbcType="BIGINT" />
+	</resultMap>
+
+	<!-- 根据条件查询用户 -->
+	<select id="find" parameterType="com.noriental.security.usermanage.domain.GroupLinkUser" resultMap="groupLinkUserMap">
+		select * from auth_link_group_user where 1=1
+		<if test="id">
+			and id = #{id}
+		</if>
+		<if test="personId != null">
+			and person_id = #{personId}
+		</if>
+		
+		<if test="domainId">
+			and domain_id = #{domainId}
+		</if>
+		
+		<if test="groupId != null">
+			and group_id = #{groupId}
+		</if>
+	</select>
+	<delete id="deleteByUserIdAndType" parameterType="map">
+		delete from auth_link_group_user where person_id = #{personId} and user_type = #{userType}
+	</delete>
+	<!--  -->
+	<insert id="insert" parameterType="com.noriental.security.usermanage.domain.GroupLinkUser"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into auth_link_group_user (
+			group_id,		person_id,	user_type,		domain_id
+		)
+		values (
+			#{groupId},		#{personId},	#{userType},	#{domainId}
+		)
+	</insert>
+	<insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true">
+		<selectKey resultType="long" keyProperty="id" order="AFTER">  
+        	SELECT  
+        	LAST_INSERT_ID()  
+    	</selectKey> 
+		insert into auth_link_group_user (group_id,		person_id,	user_type,		domain_id)
+		values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.groupId},		#{item.personId},	#{item.userType},	#{item.domainId})
+		</foreach>
+	</insert>
+</mapper>

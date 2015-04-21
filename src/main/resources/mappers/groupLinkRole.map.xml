@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.noriental.security.usermanage.domain.GroupLinkRole">
+	<resultMap id="groupLinkRoleMap" type="com.noriental.security.usermanage.domain.GroupLinkRole">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="group_id" property="groupId" jdbcType="BIGINT" />
+		<result column="role_id" property="roleId" jdbcType="BIGINT" />
+	</resultMap>
+
+	<select id="findByRoleId" parameterType="long" resultMap="groupLinkRoleMap">
+		select * from auth_link_group_role where role_id = #{roleId}
+	</select>
+	
+	<select id="findByGroupId" parameterType="long" resultMap="groupLinkRoleMap">
+		select * from auth_link_group_role where group_id = #{groupId}
+	</select>
+	
+	<delete id="deleteByGroupId" parameterType="long">
+		delete from auth_link_group_role
+		where group_id = #{groupId}
+	</delete>
+	<!--  -->
+	<insert id="insert" parameterType="com.noriental.security.usermanage.domain.GroupLinkRole"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into auth_link_group_role (
+			group_id,		role_id
+		)
+		values (
+			#{groupId},		#{roleId}
+		)
+	</insert>
+	<insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true">
+		<selectKey resultType="long" keyProperty="id" order="AFTER">  
+        	SELECT  
+        	LAST_INSERT_ID()  
+    	</selectKey> 
+		
+		insert into auth_link_group_role (group_id, role_id)
+		values 
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.groupId}, #{item.roleId})
+		</foreach>
+	</insert>
+</mapper>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:koo="http://www.koolearn.com/schema/test/koo" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans classpath:org/springframework/beans/factory/xml/spring-beans-3.2.xsd
+			http://code.alibabatech.com/schema/dubbo classpath:spring/dubbo.xsd"
+	default-autowire="byName" default-lazy-init="false">
+	<!-- dubbo监控，切勿删除 -->
+	<dubbo:monitor protocol="registry" />
+
+
+
+	<dubbo:service
+		interface="com.noriental.security.usermanage.service.PermissionService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="permissionService" />
+	<dubbo:service
+		interface="com.noriental.security.usermanage.service.FunctionService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="functionService" />
+	<dubbo:service interface="com.noriental.security.usermanage.service.GroupService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="groupService" />
+	<dubbo:service
+		interface="com.noriental.security.usermanage.service.GroupLinkUserService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="groupLinkUserService" />
+	<dubbo:service
+		interface="com.noriental.security.usermanage.service.GroupLinkRoleService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="groupLinkRoleService" />
+	<dubbo:service interface="com.noriental.security.usermanage.service.AdminService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="adminService" />
+	<dubbo:service
+		interface="com.noriental.security.usermanage.service.UserLinkSubjectService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="userLinkSubjectService" />
+	<dubbo:service interface="com.noriental.security.usermanage.service.RoleService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="roleService" />
+	<dubbo:service
+		interface="com.noriental.security.usermanage.service.RoleLinkFuncService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="roleLinkFuncService" />
+	<dubbo:service
+		interface="com.noriental.security.usermanage.service.TGradeService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="tGradeService" />
+	<dubbo:service
+		interface="com.noriental.security.usermanage.service.TStageService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="tStageService" />
+	<dubbo:service
+		interface="com.noriental.security.usermanage.service.TSubjectService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="tSubjectService" />
+	<dubbo:service
+		interface="com.noriental.security.usermanage.service.DomainService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="domainService" />
+	<dubbo:service
+		interface="com.noriental.security.usermanage.service.DomainLinkUserService"
+		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
+		ref="domainLinkUserService" />
+</beans>

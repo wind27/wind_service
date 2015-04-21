@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.noriental.security.usermanage.domain.Group">
+	<resultMap id="groupMap" type="com.noriental.security.usermanage.domain.Group">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="stats" property="stats" jdbcType="TINYINT" />
+		<result column="type" property="type" jdbcType="TINYINT" />
+		<result column="domain_id" property="domainId" jdbcType="BIGINT" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+	</resultMap>
+	<!--		新增组			-->
+	<insert id="insert" parameterType="com.noriental.security.usermanage.domain.Group"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into auth_group (
+			name, 		stats,		type, 		remark,		domain_id
+		)
+		values (
+			#{name},	#{stats},	#{type},	#{remark},	#{domainId}
+		)
+	</insert>
+	<!--		删除组			-->
+	<delete id="delete" parameterType="long">
+		delete from auth_group where id = #{id}
+	</delete>
+	
+	<!--		分页查询			-->
+	<select id="findForPage" parameterType="map" resultMap="groupMap">
+		select * from auth_group where stats = 0
+		<if test="domainId">
+			and domain_id = #{domainId}
+		</if>
+		<if test="name != null">
+			and name like CONCAT('%',#{name},'%')
+		</if>
+	</select>
+	<!--		更新组信息			-->
+	<update id="update" parameterType="com.noriental.security.usermanage.domain.Group">
+		update auth_group 
+		<set>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="stats != null">
+				stats = #{stats},
+			</if>
+			<if test="type != null">
+				type = #{type},
+			</if>
+			<if test="remark != null">
+				remark = #{remark},
+			</if>
+		</set> 
+		where 1=1
+		<if test="id != null">
+			and id=#{id}
+		</if> 
+	</update>
+	<!--		根据用户id查询组信息	-->
+	<select id="findByUserIdAndUserType" parameterType="map" resultType="com.noriental.security.usermanage.domain.Group">
+		select g.* from auth_link_group_user gu ,auth_group g
+		where gu.group_id = g.id and gu.person_id=#{personId} and gu.user_type=#{userType}
+	</select>
+	<!--		根据组id查询组信息	-->
+	<select id="findById" parameterType="long" resultMap="groupMap">
+		select * from auth_group where id = #{id}
+	</select>
+	<!--		根据条件查询组信息	-->
+	<select id="find" parameterType="map" resultMap="groupMap">
+		select * from auth_group where 1=1 
+		<if test="name != null">
+			and name=#{name}
+		</if> 
+		<if test="stats != null">
+			and stats=#{stats}
+		</if> 
+		<if test="type != null">
+			and type = #{type}
+		</if>
+		<if test="domainId != null">
+			and domain_id = #{domainId}
+		</if>
+	</select>
+	
+	
+	<select id="findByRoleId" parameterType="long" resultMap="groupMap">
+		select * from auth_group where id  in (
+			select group_id  from auth_link_group_role where role_id = #{roleId}
+		)
+	</select>
+</mapper>

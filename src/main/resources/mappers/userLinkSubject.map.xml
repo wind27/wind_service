@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.noriental.security.usermanage.domain.UserLinkSubject">
+	<resultMap id="userLinkSubjectMap" type="com.noriental.security.usermanage.domain.UserLinkSubject">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="person_id" property="personId" jdbcType="BIGINT" />
+		<result column="subject_id" property="subjectId" jdbcType="BIGINT" />
+		<result column="grade_type" property="gradeType" jdbcType="TINYINT" />
+		<result column="user_type" property="userType" jdbcType="TINYINT" />
+	</resultMap>
+
+	<!-- 根据条件查询用户 -->
+	<select id="findByUserIdAndUserType" parameterType="map" resultMap="userLinkSubjectMap">
+		select * from auth_link_admin_subject 
+		where person_id=#{personId} and user_type=#{userType}
+	</select>
+	
+	<delete id="deleteByUserIdAndUserType" parameterType="map">
+		delete from auth_link_admin_subject
+		where person_id=#{personId} and user_type=#{userType}
+	</delete>
+	
+	<insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true">
+		
+		<selectKey resultType="long" keyProperty="id" order="AFTER">  
+        	SELECT  
+        	LAST_INSERT_ID()  
+    	</selectKey>  
+		
+		insert into auth_link_admin_subject (subject_id, person_id,	grade_type, user_type, domain_id)
+		values 
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.subjectId}, #{item.personId}, #{item.gradeType}, #{item.userType}, #{item.domainId})
+		</foreach>
+	</insert>
+</mapper>

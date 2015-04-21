@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.noriental.security.usermanage.domain.TGrade">
+	<resultMap id="tGradeMap" type="com.noriental.security.usermanage.domain.TGrade">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="stage_id" property="stageId" jdbcType="BIGINT" />
+		<result column="fullname" property="fullname" jdbcType="VARCHAR" />
+		<result column="seq" property="seq" jdbcType="TINYINT" />
+	</resultMap>
+
+	<!-- 根据条件查询用户 -->
+	<select id="find" parameterType="map" resultMap="tGradeMap">
+		select tg.id, tg.name, tg.seq, tg.fullname, tg.stage_id from entity_grade tg 
+		<if test="stageId != null">
+			where tg.stage_id = #{stageId} 
+		</if>
+		order by tg.seq
+	</select>
+	<!-- 根据用户id获取年级 -->
+	<select id="findGradeByUserId" parameterType="long" resultMap="tGradeMap">
+		select tg.id, tg.name, tg.seq, tg.fullname, tg.stage_id from entity_grade tg 
+			where tg.stage_id in (
+				select distinct stage_id from entity_subject where id in (
+					select subject_id from auth_link_admin_subject  where person_id = #{personId}
+				)
+			)
+		order by tg.seq
+	</select>
+</mapper>

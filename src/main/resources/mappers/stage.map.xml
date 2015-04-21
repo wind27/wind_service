@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.noriental.security.usermanage.domain.TStage">
+	<resultMap id="tStageMap" type="com.noriental.security.usermanage.domain.TStage">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="seq" property="seq" jdbcType="TINYINT" />
+	</resultMap>
+
+	<!-- 根据条件查询用户 -->
+	<select id="find" parameterType="map" resultMap="tStageMap">
+		select ts.id, ts.name, ts.seq from entity_stage ts 
+		<if test="stageId != null">
+			where ts.id = #{stageId} order by ts.seq
+		</if>
+	</select>
+	
+	<!-- 根据用户id获取学段 -->
+	<select id="findStageByUserId" parameterType="long" resultMap="tStageMap">
+		select * from entity_stage where id in (
+			select distinct  stage_id   from entity_subject where id in (
+				select subject_id from auth_link_admin_subject  where person_id = #{personId}
+			)
+		) order by seq asc;
+	</select>
+</mapper>

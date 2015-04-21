@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.noriental.security.usermanage.domain.Role">
+	<resultMap id="roleMap" type="com.noriental.security.usermanage.domain.Role">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="TINYINT" />
+		
+		<result column="stats" property="stats" jdbcType="TINYINT" />
+		<result column="domain_id" property="domainId" jdbcType="BIGINT" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!--		新增角色			-->
+	<insert id="insert" parameterType="com.noriental.security.usermanage.domain.Role"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into auth_role (
+			name, 			type,			stats,
+			domain_id,		remark
+		)
+		values (
+			#{name},		#{type},		#{stats},
+			#{domainId},	#{remark}
+		)
+	</insert>
+	<!--		根据 id 删除角色		-->
+	<delete id="delete" parameterType="java.lang.Long">
+    	delete from auth_role where id = #{id}
+    </delete>
+    <!--		分页查询角色		-->
+    <select id="findForPage" parameterType="map" resultMap="roleMap">
+		select * from auth_role where stats = 0
+		<if test="domainId">
+			and domain_id = #{domainId}
+		</if>
+		<if test="name != null">
+			and name like CONCAT('%',#{name},'%')
+		</if>
+	</select>
+    <!--		根据id查询角色信息	-->
+    <select id="findById" parameterType="long" resultMap="roleMap">
+		select * from auth_role where id = #{id}
+	</select>
+	<!--		更新角色信息		-->
+    <update id="update" parameterType="com.noriental.security.usermanage.domain.Role">
+		update auth_role 
+		<set>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="remark != null">
+				remark = #{remark},
+			</if>
+		</set> 
+		where 1=1
+		<if test="id != null">
+			and id=#{id}
+		</if> 
+	</update>
+	<!--		根据条件查询组信息	-->
+	<select id="find" parameterType="map" resultMap="roleMap">
+		select * from auth_role where 1=1 
+		<if test="name != null">
+			and name=#{name}
+		</if>
+		<if test="type != null">
+			and type = #{type}
+		</if>
+		<if test="stats != null">
+			and stats=#{stats}
+		</if> 
+	</select>
+	
+	
+	<select id="findByGroupId" parameterType="long" resultMap="roleMap">
+		select * from auth_role r, auth_link_group_role gr 
+		where r.id = gr.role_id and gr.group_id = #{groupId, jdbcType=BIGINT} 
+	</select>
+</mapper>
