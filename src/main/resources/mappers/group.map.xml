@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.noriental.security.usermanage.domain.Group">
-	<resultMap id="groupMap" type="com.noriental.security.usermanage.domain.Group">
+<mapper namespace="com.noriental.security.domain.Group">
+	<resultMap id="groupMap" type="com.noriental.security.domain.Group">
 		<id column="id" property="id" jdbcType="BIGINT" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="stats" property="stats" jdbcType="TINYINT" />
@@ -10,7 +10,7 @@
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
 	</resultMap>
 	<!--		新增组			-->
-	<insert id="insert" parameterType="com.noriental.security.usermanage.domain.Group"
+	<insert id="insert" parameterType="com.noriental.security.domain.Group"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into auth_group (
 			name, 		stats,		type, 		remark,		domain_id
@@ -35,7 +35,7 @@
 		</if>
 	</select>
 	<!--		更新组信息			-->
-	<update id="update" parameterType="com.noriental.security.usermanage.domain.Group">
+	<update id="update" parameterType="com.noriental.security.domain.Group">
 		update auth_group 
 		<set>
 			<if test="name != null">
@@ -57,7 +57,7 @@
 		</if> 
 	</update>
 	<!--		根据用户id查询组信息	-->
-	<select id="findByUserIdAndUserType" parameterType="map" resultType="com.noriental.security.usermanage.domain.Group">
+	<select id="findByUserIdAndUserType" parameterType="map" resultType="com.noriental.security.domain.Group">
 		select g.* from auth_link_group_user gu ,auth_group g
 		where gu.group_id = g.id and gu.person_id=#{personId} and gu.user_type=#{userType}
 	</select>

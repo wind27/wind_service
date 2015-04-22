@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.noriental.security.usermanage.domain.UserLinkSubject">
-	<resultMap id="userLinkSubjectMap" type="com.noriental.security.usermanage.domain.UserLinkSubject">
+<mapper namespace="com.noriental.security.domain.UserLinkSubject">
+	<resultMap id="userLinkSubjectMap" type="com.noriental.security.domain.UserLinkSubject">
 		<id column="id" property="id" jdbcType="BIGINT" />
 		<result column="person_id" property="personId" jdbcType="BIGINT" />
 		<result column="subject_id" property="subjectId" jdbcType="BIGINT" />

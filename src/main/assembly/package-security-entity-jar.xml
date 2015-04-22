@@ -11,7 +11,7 @@
         <fileSet>
             <directory>${project.build.directory}/classes</directory>
             <includes>
-                <include>com/noriental/security/usermanage/domain/**</include>
+                <include>com/noriental/security/domain/**</include>
             </includes>
             <outputDirectory>/</outputDirectory>
         </fileSet>

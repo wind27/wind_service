@@ -11,10 +11,10 @@
         <fileSet>
             <directory>${project.build.directory}/classes</directory>
             <includes>
-                <include>com/noriental/security/usermanage/service/*.class</include>
+                <include>com/noriental/security/service/*.class</include>
             </includes>
             <excludes>
-            	<exclude>com/noriental/security/usermanage/service/impl/**</exclude>
+            	<exclude>com/noriental/security/service/impl/**</exclude>
             </excludes>
             <outputDirectory>/</outputDirectory>
         </fileSet>

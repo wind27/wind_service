@@ -175,7 +175,7 @@
 
 
 	<build>
-		<finalName>service_security</finalName>
+		<finalName>wind_service</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -425,7 +425,7 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<!-- <resources>
+		<resources>
 			<resource>
 				<directory>src/main/resources/spring</directory>
 				<targetPath>${project.build.directory}/conf/spring</targetPath>
@@ -454,7 +454,7 @@
 				</includes>
 				<targetPath>${project.build.directory}/conf</targetPath>
 			</resource>
-		</resources> -->
+		</resources>
 	</build>
 
 

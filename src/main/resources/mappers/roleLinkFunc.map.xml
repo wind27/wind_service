@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.noriental.security.usermanage.domain.RoleLinkFunc">
-	<resultMap id="roleLinkFuncMap" type="com.noriental.security.usermanage.domain.RoleLinkFunc">
+<mapper namespace="com.noriental.security.domain.RoleLinkFunc">
+	<resultMap id="roleLinkFuncMap" type="com.noriental.security.domain.RoleLinkFunc">
 		<id column="id" property="id" jdbcType="BIGINT" />
 		<result column="role_id" property="roleId" jdbcType="BIGINT" />
 		<result column="func_id" property="funcId" jdbcType="BIGINT" />

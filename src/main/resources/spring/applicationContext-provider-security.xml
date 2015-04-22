@@ -12,56 +12,56 @@
 
 
 	<dubbo:service
-		interface="com.noriental.security.usermanage.service.PermissionService"
+		interface="com.noriental.security.service.PermissionService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="permissionService" />
 	<dubbo:service
-		interface="com.noriental.security.usermanage.service.FunctionService"
+		interface="com.noriental.security.service.FunctionService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="functionService" />
-	<dubbo:service interface="com.noriental.security.usermanage.service.GroupService"
+	<dubbo:service interface="com.noriental.security.service.GroupService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="groupService" />
 	<dubbo:service
-		interface="com.noriental.security.usermanage.service.GroupLinkUserService"
+		interface="com.noriental.security.service.GroupLinkUserService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="groupLinkUserService" />
 	<dubbo:service
-		interface="com.noriental.security.usermanage.service.GroupLinkRoleService"
+		interface="com.noriental.security.service.GroupLinkRoleService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="groupLinkRoleService" />
-	<dubbo:service interface="com.noriental.security.usermanage.service.AdminService"
+	<dubbo:service interface="com.noriental.security.service.AdminService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="adminService" />
 	<dubbo:service
-		interface="com.noriental.security.usermanage.service.UserLinkSubjectService"
+		interface="com.noriental.security.service.UserLinkSubjectService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="userLinkSubjectService" />
-	<dubbo:service interface="com.noriental.security.usermanage.service.RoleService"
+	<dubbo:service interface="com.noriental.security.service.RoleService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="roleService" />
 	<dubbo:service
-		interface="com.noriental.security.usermanage.service.RoleLinkFuncService"
+		interface="com.noriental.security.service.RoleLinkFuncService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="roleLinkFuncService" />
 	<dubbo:service
-		interface="com.noriental.security.usermanage.service.TGradeService"
+		interface="com.noriental.security.service.TGradeService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="tGradeService" />
 	<dubbo:service
-		interface="com.noriental.security.usermanage.service.TStageService"
+		interface="com.noriental.security.service.TStageService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="tStageService" />
 	<dubbo:service
-		interface="com.noriental.security.usermanage.service.TSubjectService"
+		interface="com.noriental.security.service.TSubjectService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="tSubjectService" />
 	<dubbo:service
-		interface="com.noriental.security.usermanage.service.DomainService"
+		interface="com.noriental.security.service.DomainService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="domainService" />
 	<dubbo:service
-		interface="com.noriental.security.usermanage.service.DomainLinkUserService"
+		interface="com.noriental.security.service.DomainLinkUserService"
 		protocol="dubbo" timeout="5000" version="${service.dubbo.security.version}"
 		ref="domainLinkUserService" />
 </beans>

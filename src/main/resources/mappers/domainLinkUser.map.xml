@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.noriental.security.usermanage.domain.DomainLinkUser">
-	<resultMap id="domainLinkUserMap" type="com.noriental.security.usermanage.domain.DomainLinkUser">
+<mapper namespace="com.noriental.security.domain.DomainLinkUser">
+	<resultMap id="domainLinkUserMap" type="com.noriental.security.domain.DomainLinkUser">
 		<id column="id" property="id" jdbcType="BIGINT" />
 		<result column="user_id" property="userId" jdbcType="BIGINT" />
 		<result column="domain_id" property="domainId" jdbcType="BIGINT" />
@@ -9,7 +9,7 @@
 	</resultMap>
 
 	<!-- 根据条件查询用户 -->
-	<insert id="create" parameterType="com.noriental.security.usermanage.domain.DomainLinkUser" useGeneratedKeys="true">
+	<insert id="create" parameterType="com.noriental.security.domain.DomainLinkUser" useGeneratedKeys="true">
 		
 		<selectKey resultType="long" keyProperty="id" order="AFTER">  
         	SELECT  
