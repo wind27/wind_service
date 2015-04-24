@@ -13,7 +13,7 @@
 	
 	<context:component-scan base-package="com.noriental.security.dao.impl"/>
 	<context:component-scan base-package="com.noriental.security.service.impl"/>
-    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+    <!-- <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
         <property name="driverClass" value="${ds.bonecp.driver}" />
         <property name="jdbcUrl" value="${ds.bonecp.url}" />
         <property name="username" value="${ds.bonecp.username}"/>
@@ -23,8 +23,26 @@
         <property name="partitionCount" value="${ds.bonecp.partitionCount}"/>
         <property name="acquireIncrement" value="${ds.bonecp.acquireIncrement}"/>
         <property name="statementsCacheSize" value="${ds.bonecp.statementsCacheSize}"/>
-    </bean>
-
+    </bean> -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<property name="driverClassName" value="${ds.druid.driver}" />
+		<property name="url" value="${ds.druid.url}" />
+		<property name="username" value="${ds.druid.username}" />
+		<property name="password" value="${ds.druid.password}" />
+		<property name="initialSize" value="${ds.druid.initialSize}" />
+		<property name="minIdle" value="${ds.druid.minIdle}" />
+		<property name="maxActive" value="${ds.druid.maxActive}" />
+		<property name="maxWait" value="${ds.druid.maxWait}" />
+		<property name="timeBetweenEvictionRunsMillis" value="${ds.druid.timeBetweenEvictionRunsMillis}" />
+		<property name="minEvictableIdleTimeMillis" value="${ds.druid.minEvictableIdleTimeMillis}" />
+		<property name="filters" value="${ds.druid.filters}" />
+		<property name="proxyFilters">
+			<list>
+				<ref bean="stat-filter" />
+			</list>
+		</property>
+	</bean>
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="configLocation" value="classpath:mappers/mybatis-config.xml"></property>
         <property name="dataSource" ref="dataSource" />
@@ -68,4 +86,39 @@
         <aop:pointcut id="serviceMethods" expression="execution(* com.noriental.security.service.*.*(..))"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
     </aop:config>
+    
+    <!-- ******************************************************************************************************* -->
+	<!-- druid 关联监控配置 ：方法名正则拦截匹配 -->
+	<bean id="druid-stat-interceptor"
+		class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor">
+	</bean>
+
+	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut"
+		scope="prototype">
+		<property name="patterns">
+			<list>
+				<value>com.noriental.*.dao.*</value>
+			</list>
+		</property>
+	</bean>
+	<aop:config>
+		<aop:advisor advice-ref="druid-stat-interceptor"
+			pointcut-ref="druid-stat-pointcut" />
+	</aop:config>
+
+
+	<!-- stat_filter sql监控 -->
+	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+		<property name="slowSqlMillis" value="10000" />
+		<property name="logSlowSql" value="true" />
+	</bean>
+	
+	<!-- <bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig"
+		init-method="init">
+		<property name="dir" value="META-INF/druid/wall/mysql" />
+	</bean>
+	<bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+		<property name="dbType" value="mysql" />
+		<property name="config" ref="wall-filter-config" />
+	</bean> -->
 </beans>
