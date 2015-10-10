@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE mycat:schema SYSTEM "schema.dtd">
+<mycat:schema xmlns:mycat="http://org.opencloudb/">
+
+	<!-- 权限数据库 -->
+	<schema name="DB_PERMISSION" checkSQLschema="false" sqlMaxLimit="100">
+		<table name="auth_domain" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="auth_func" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="auth_group" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="auth_link_domain_user" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="auth_link_group_role" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="auth_link_role_func" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="auth_permission" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="auth_role" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="auth_group" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		
+		<table name="d_area" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="d_city" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="d_province" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="entity_grade" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="entity_stage" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="entity_subject" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		
+		<table name="auth_link_admin_subject" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="entity_admin" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="auth_link_group_user" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+	</schema>
+
+	<!-- 字典数据 -->
+	<!-- <schema name="DB_PUBLIC" checkSQLschema="false" sqlMaxLimit="100">
+		<table name="d_area" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="d_city" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="d_province" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="entity_grade" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="entity_stage" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="entity_subject" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+	</schema> -->
+	
+	<!-- 用户 -->
+	<!-- <schema name="DB_USER" checkSQLschema="false" sqlMaxLimit="100">
+		<table name="auth_link_admin_subject" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="entity_admin" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+		<table name="auth_group" primaryKey="id" type="global" dataNode="dn1,dn2,dn3" />
+	</schema> -->
+	
+
+	<dataNode name="dn1" dataHost="localhost1" database="db1" />
+	<dataNode name="dn2" dataHost="localhost1" database="db2" />
+	<dataNode name="dn3" dataHost="localhost1" database="db3" />
+	
+	<dataHost name="localhost1" maxCon="1000" minCon="10" balance="0"
+		writeType="0" dbType="mysql" dbDriver="native">
+		<heartbeat>select user()</heartbeat>
+		<!-- can have multi write hosts -->
+		<writeHost host="hostM1" url="192.168.19.128:3306" user="root" password="123456">
+			<readHost host="hostS1" url="192.168.19.128:3306" user="root" password="123456"/>
+		</writeHost>
+	</dataHost>
+</mycat:schema>

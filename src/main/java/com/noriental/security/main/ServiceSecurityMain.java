@@ -14,13 +14,13 @@ import com.alibaba.dubbo.common.utils.ConfigUtils;
 import com.alibaba.dubbo.container.Container;
 
 
-public class Main {
+public class ServiceSecurityMain {
 
     public static final String CONTAINER_KEY = "dubbo.container";
 
     public static final String SHUTDOWN_HOOK_KEY = "dubbo.shutdown.hook";
     
-    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServiceSecurityMain.class);
 
     private static final ExtensionLoader<Container> loader = ExtensionLoader.getExtensionLoader(Container.class);
     
@@ -49,9 +49,9 @@ public class Main {
 	                        } catch (Throwable t) {
 	                            logger.error(t.getMessage(), t);
 	                        }
-	                        synchronized (Main.class) {
+	                        synchronized (ServiceSecurityMain.class) {
 	                            running = false;
-	                            Main.class.notify();
+	                            ServiceSecurityMain.class.notify();
 	                        }
 	                    }
 	                }
@@ -68,10 +68,10 @@ public class Main {
             logger.error(e.getMessage(), e);
             System.exit(1);
         }
-        synchronized (Main.class) {
+        synchronized (ServiceSecurityMain.class) {
             while (running) {
                 try {
-                    Main.class.wait();
+                    ServiceSecurityMain.class.wait();
                 } catch (Throwable e) {
                 }
             }

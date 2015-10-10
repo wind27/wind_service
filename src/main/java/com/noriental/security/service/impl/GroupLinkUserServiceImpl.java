@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.dubbo.common.logger.Logger;
-import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.noriental.security.dao.GroupLinkUserDao;
 import com.noriental.security.domain.GroupLinkUser;
 import com.noriental.security.service.GroupLinkUserService;

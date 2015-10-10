@@ -113,12 +113,12 @@
 		<property name="logSlowSql" value="true" />
 	</bean>
 	
-	<!-- <bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig"
+	<bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig"
 		init-method="init">
 		<property name="dir" value="META-INF/druid/wall/mysql" />
 	</bean>
 	<bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
 		<property name="dbType" value="mysql" />
 		<property name="config" ref="wall-filter-config" />
-	</bean> -->
+	</bean>
 </beans>
